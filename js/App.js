@@ -62,6 +62,14 @@ export default class App {
                 NotesAPI.deleteNote(noteId);
                 this._refreshNotes();
             },
+
+            onNoteImport: () => {
+                NotesAPI.importNotes();
+            },
+
+            onNoteExport: () => {
+                NotesAPI.exportNotes();
+            },
         };
     }
 }

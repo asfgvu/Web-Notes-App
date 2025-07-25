@@ -1,12 +1,16 @@
 export default class NotesView {
-    constructor(root, { onNoteSelect, onNoteAdd, onNoteEdit, onNoteDelete } = {}) {
+    constructor(root, { onNoteSelect, onNoteAdd, onNoteEdit, onNoteDelete, onNoteImport, onNoteExport } = {}) {
         this.root = root;
         this.onNoteSelect = onNoteSelect;
         this.onNoteAdd = onNoteAdd;
         this.onNoteEdit = onNoteEdit;
         this.onNoteDelete = onNoteDelete;
+        this.onNoteImport = onNoteImport;
+        this.onNoteExport = onNoteExport;
         this.root.innerHTML = `
             <div class="notes__sidebar">
+                <button class="notes__export" type="button">Export Note</button>
+                <button class="notes__import" type="button">Import Note</button>
                 <button class="notes__add" type="button">Add Note</button>
                 <div class="notes__list"></div>
             </div>
@@ -17,11 +21,21 @@ export default class NotesView {
         `;
 
         const btnAddNote = this.root.querySelector(".notes__add");
+        const btnImportNote = this.root.querySelector(".notes__import")
+        const btnExportNote = this.root.querySelector(".notes__export")
         const inpTitle = this.root.querySelector(".notes__title");
         const inpBody = this.root.querySelector(".notes__body");
 
         btnAddNote.addEventListener("click", () => {
             this.onNoteAdd();
+        });
+
+        btnImportNote.addEventListener("click", () => {
+            this.onNoteImport();
+        });
+
+        btnExportNote.addEventListener("click", () => {
+            this.onNoteExport();
         });
 
         [inpTitle, inpBody].forEach(inputField => {
@@ -70,7 +84,8 @@ export default class NotesView {
                 this.onNoteSelect(noteListItem.dataset.noteId);
             });
 
-            noteListItem.addEventListener("dblclick", () => {
+            noteListItem.addEventListener("contextmenu", (event) => {
+                event.preventDefault();
                 const doDelete = confirm("Are you sure you want to delete this note ?");
 
                 if (doDelete) {
